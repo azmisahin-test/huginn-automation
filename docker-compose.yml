@@ -1,0 +1,26 @@
+services:
+  huginn:
+    image: huginn/huginn
+    environment:
+      - DATABASE_ADAPTER=mysql2
+      - DATABASE_HOST=db
+      - DATABASE_NAME=huginn
+      - DATABASE_USERNAME=huginn
+      - DATABASE_PASSWORD=huginn
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+
+  db:
+    image: mysql:5.7
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=huginn
+      - MYSQL_USER=huginn
+      - MYSQL_PASSWORD=huginn
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:

@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   huginn:
     image: huginn/huginn
@@ -10,17 +12,28 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   db:
-    image: mysql:5.7
+    image: mysql:8.0
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=huginn
       - MYSQL_USER=huginn
       - MYSQL_PASSWORD=huginn
-    volumes:
+    volumes:s
       - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
 volumes:
   db_data:
